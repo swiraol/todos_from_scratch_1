@@ -1,11 +1,11 @@
-CREATE TABLE lists (
+CREATE TABLE IF NOT EXISTS lists (
   id SERIAL PRIMARY KEY,
   title text NOT NULL UNIQUE
 );
 
-CREATE TABLE todos (
+CREATE TABLE IF NOT EXISTS todos (
   id SERIAL PRIMARY KEY,
   title text NOT NULL,
   completed BOOLEAN NOT NULL DEFAULT false,
-  list_id ADD FOREIGN KEY REFERENCES lists (id) DELETE ON CASCADE
+  list_id integer NOT NULL REFERENCES lists (id) ON DELETE CASCADE
 );

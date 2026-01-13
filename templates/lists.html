@@ -1,3 +1,8 @@
-{% for lst in lists %}
-  {{ lst.title }}
-{% endfor %}
+<p>All Lists</p>
+<ul>
+  {% for lst in lists %}
+    <li>
+      {{ lst.title }}
+    </li>
+  {% endfor %}
+</ul>

@@ -1,0 +1,20 @@
+{{ lst['title'] }}
+<ul>
+  {% for todo in lst['todos'] %}
+    <li>{{ todo['title'] }}</li>
+  {% endfor %}
+</ul>
+
+<form action="{{ url_for('create_todo', list_id=lst['id']) }}" method="post">
+  <dl>
+    <dt>
+      <label for="todo_title">Enter a new todo item:</label>
+    </dt>
+    <dd>
+      <input name="todo_title" id="todo_title" placeholder="Something to do" type="text">
+    </dd>
+  </dl>
+  <fieldset class="actions">
+    <input type="submit" value="Add">
+  </fieldset>
+</form>

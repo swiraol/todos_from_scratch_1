@@ -1,4 +1,4 @@
-from flask import Flask, g, redirect, render_template, url_for 
+from flask import Flask, g, redirect, render_template, request, url_for 
 from todos.database_persistence import DatabasePersistence
 
 app = Flask(__name__)
@@ -15,6 +15,27 @@ def index():
 def get_lists():
     all_lists = g.storage.all_lists()
     return render_template('lists.html', lists=all_lists)
+
+@app.route("/lists", methods=["POST"])
+def create_list():
+    title = request.form['list_title']
+    g.storage.create_list(title)
+    return redirect(url_for('get_lists'))
+
+@app.route("/lists/new")
+def new_list():
+    return render_template('new_list.html')
+
+@app.route("/lists/<list_id>")
+def show_list(list_id):
+    lst = g.storage.find_list(list_id)
+    return render_template('list.html', lst=lst)
+
+@app.route("/lists/<list_id>/todos", methods=["POST"])
+def create_todo(list_id):
+    todo_title = request.form['todo_title']
+    g.storage.create_todo(list_id, todo_title)
+    return redirect(url_for('view_list', list_id=list_id))
 
 if __name__ == "__main__":
     app.run(debug=True, port=5003)

@@ -44,11 +44,19 @@ class DatabasePersistence:
 
         return lst
 
-    def edit_list(self):
-        pass 
+    def edit_list(self, list_id, title):
+        query = "UPDATE lists SET title = %s WHERE id = %s"
 
-    def delete_list(self):
-        pass 
+        with self._database_connect() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(query, (title, list_id))
+
+    def delete_list(self, list_id):
+        query = "DELETE FROM lists WHERE id = %s"
+
+        with self._database_connect() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(query, (list_id,))
 
     def create_todo(self, list_id, todo_title):
         query = "INSERT INTO todos (title, list_id) VALUES (%s, %s)"

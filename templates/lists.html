@@ -2,7 +2,9 @@
 <ul>
   {% for lst in lists %}
     <li>
-      {{ lst.title }}
+      <a href="{{ url_for('show_list', list_id=lst['id']) }}">{{ lst.title }}</a>
     </li>
   {% endfor %}
 </ul>
+
+<a href="{{ url_for('new_list') }}">Add New List</a>

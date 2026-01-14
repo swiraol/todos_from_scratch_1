@@ -37,8 +37,7 @@ class DatabasePersistence:
         with self._database_connect() as conn:
             with conn.cursor(cursor_factory=DictCursor) as cursor:
                 cursor.execute(query, (list_id,))
-                lst = cursor.fetchone()
-                lst = dict(lst)
+                lst = dict(cursor.fetchone())
         
         todos = self.find_todos(list_id)
         lst['todos'] = todos
@@ -65,10 +64,16 @@ class DatabasePersistence:
             with conn.cursor(cursor_factory=DictCursor) as cursor:
                 cursor.execute(query, (list_id,))
                 todos = cursor.fetchall()
-                print(f"todos: {todos}")
                 todos = [dict(todo) for todo in todos]
         
         return todos
+
+    def delete_todo(self, list_id, todo_id):
+        query = "DELETE FROM todos WHERE id = %s and list_id = %s"
+
+        with self._database_connect() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(query, (todo_id, list_id))
 
     def update_todo_status(self):
         pass 

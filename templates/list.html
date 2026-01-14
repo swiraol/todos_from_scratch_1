@@ -2,6 +2,9 @@
 <ul>
   {% for todo in lst['todos'] %}
     <li>{{ todo['title'] }}</li>
+      <form action="{{ url_for('delete_todo', list_id=lst['id'], todo_id=todo['id']) }}" method="post" class="delete">
+        <button type="submit">Delete</button>
+      </form>
   {% endfor %}
 </ul>
 
@@ -18,3 +21,6 @@
     <input type="submit" value="Add">
   </fieldset>
 </form>
+
+<a href="{{ url_for('get_lists') }}">All Lists</a>
+

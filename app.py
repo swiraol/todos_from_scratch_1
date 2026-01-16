@@ -61,5 +61,17 @@ def delete_todo(list_id, todo_id):
     
     return redirect(url_for('show_list', list_id=list_id))
 
+@app.route("/lists/<list_id>/todos/<todo_id>/update", methods=["POST"])
+def update_todo(list_id, todo_id):
+    print(request.form)
+    is_completed = request.form.get('item_status') is not None 
+    g.storage.update_todo_status(list_id, todo_id, is_completed)
+    return redirect(url_for('show_list', list_id=list_id))
+
+@app.route("/lists/<list_id>/complete_all", methods=["POST"])
+def complete_all(list_id):
+    g.storage.complete_all_todos(list_id)
+    return redirect(url_for('show_list', list_id=list_id))
+
 if __name__ == "__main__":
     app.run(debug=True, port=5003)

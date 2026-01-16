@@ -128,6 +128,10 @@ form fieldset.actions a:hover {
   color: #b00b00;
 }
 
+.completed-text {
+  text-decoration: line-through;
+  color: gray;
+}
 .flash {
   max-width: 960px;
   padding: 10px 20px;

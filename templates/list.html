@@ -1,8 +1,32 @@
+<head>
+  <link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/application.css') }}"
+</head>
+
 {{ lst['title'] }}
+<form class="complete_all"
+      action="{{ url_for('complete_all', list_id=lst['id']) }}"
+      method="post">
+  <button class="check" type="submit">Complete All</button>
+</form>
 <a href="{{ url_for('edit_list', list_id=lst['id']) }}">Edit List</a>
 <ul>
   {% for todo in lst['todos'] %}
-    <li>{{ todo['title'] }}</li>
+    <li>
+      <span class="{% if todo.completed %}completed-text{% endif %}">{{ todo['title'] }}
+
+      </span>
+    </li>
+      <form action="{{ url_for('update_todo', list_id=lst['id'], todo_id=todo['id']) }}" method="POST">
+        <input 
+          type="checkbox" 
+          name="item_status" 
+          onchange="this.form.submit()" 
+          {% if todo.completed %} 
+            checked 
+          {% endif %}
+        >
+      </form>
+
       <form action="{{ url_for('delete_todo', list_id=lst['id'], todo_id=todo['id']) }}" method="post" class="delete">
         <button type="submit">Delete</button>
       </form>

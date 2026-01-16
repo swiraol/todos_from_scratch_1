@@ -66,7 +66,7 @@ class DatabasePersistence:
                 cursor.execute(query, (todo_title, list_id))
 
     def find_todos(self, list_id):
-        query = "SELECT * FROM todos WHERE list_id = %s"
+        query = "SELECT * FROM todos WHERE list_id = %s ORDER BY id ASC"
 
         with self._database_connect() as conn:
             with conn.cursor(cursor_factory=DictCursor) as cursor:
@@ -83,9 +83,17 @@ class DatabasePersistence:
             with conn.cursor() as cursor:
                 cursor.execute(query, (todo_id, list_id))
 
-    def update_todo_status(self):
-        pass 
+    def update_todo_status(self, list_id, todo_id, status):
+        query = "UPDATE todos SET completed = %s WHERE id = %s and list_id = %s"
 
-    def complete_all_todos(self):
-        pass 
+        with self._database_connect() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(query, (status, todo_id, list_id))
+
+    def complete_all_todos(self, list_id):
+        query = "UPDATE todos SET completed = True WHERE list_id = %s"
+
+        with self._database_connect() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(query, (list_id,))
 

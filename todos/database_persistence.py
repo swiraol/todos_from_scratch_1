@@ -1,6 +1,7 @@
 import psycopg2 
 from psycopg2.extras import DictCursor 
 from contextlib import contextmanager 
+from werkzeug.exceptions import NotFound 
 
 class DatabasePersistence:
     def __init__(self):
@@ -37,7 +38,10 @@ class DatabasePersistence:
         with self._database_connect() as conn:
             with conn.cursor(cursor_factory=DictCursor) as cursor:
                 cursor.execute(query, (list_id,))
-                lst = dict(cursor.fetchone())
+                lst = cursor.fetchone()
+                if lst is None:
+                    raise NotFound(f"List with ID {list_id} not found.")
+        lst = dict(lst)
         
         todos = self.find_todos(list_id)
         lst['todos'] = todos

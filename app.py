@@ -1,7 +1,19 @@
-from flask import Flask, g, redirect, render_template, request, url_for 
+from flask import (
+    flash, 
+    Flask, 
+    g, 
+    redirect, 
+    render_template, 
+    request, 
+    secrets,
+    session, 
+    url_for
+)
 from todos.database_persistence import DatabasePersistence
 
 app = Flask(__name__)
+
+app.secret_key = secrets.token_hex(32)
 
 @app.before_request
 def load_storage():
@@ -20,6 +32,7 @@ def get_lists():
 def create_list():
     title = request.form['list_title']
     g.storage.create_list(title)
+    flash('You successfully created a new list', 'success')
     return redirect(url_for('get_lists'))
 
 @app.route("/lists/new/")
@@ -41,11 +54,13 @@ def edit_list(list_id):
 def update_list(list_id):
     title = request.form['new_list_title']
     g.storage.edit_list(list_id, title)
+    flash('You successfully edited your list', 'success')
 
     return redirect(url_for('show_list', list_id=list_id))
 @app.route("/lists/<list_id>/delete/", methods=['POST'])
 def delete_list(list_id):
     g.storage.delete_list(list_id)
+    flash('You successfully deleted the list', 'success')
 
     return redirect(url_for('get_lists'))
 
@@ -53,11 +68,13 @@ def delete_list(list_id):
 def create_todo(list_id):
     todo_title = request.form['todo_title']
     g.storage.create_todo(list_id, todo_title)
+    flash('You successfully created a todo item', 'success')
     return redirect(url_for('show_list', list_id=list_id))
 
 @app.route("/lists/<list_id>/todos/<todo_id>/delete/", methods=["POST"])
 def delete_todo(list_id, todo_id):
     g.storage.delete_todo(list_id, todo_id)
+    flash('You successfully deleted a todo item', 'success')
     
     return redirect(url_for('show_list', list_id=list_id))
 

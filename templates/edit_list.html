@@ -1,3 +1,13 @@
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <ul>
+      {% for category, message in messages %}
+        <strong>{{ category }}:</strong>{{ message }}
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
 <p>Editing '{{ lst['title'] }}'</p>
 <form action="{{ url_for('delete_list', list_id=lst['id']) }}"
   method="post" class="delete">

@@ -17,5 +17,8 @@
   # ​Delete a todo​: Create a route for /lists/<list_id>/todos/<todo_id>/delete (POST).
   # ​Toggle a todo's status​: Create a route for /lists/<list_id>/todos/<todo_id>/toggle (POST) to update its completion status.
   # ​Complete all todos​: Create a route for /lists/<list_id>/complete_all (POST) to mark all todos in a list as complete.
+# Implement validations
+  # Create a validation that checks for a list title error
+  # Create a validation that checks for a todo title error (current)
 # Refactoring
   # As discussed in the Removing Code Duplication assignment, the logic for finding a list or todo and handling a "not found" scenario is repeated. Refactor this logic into decorators (@require_list, @require_todo) to keep your routes clean.

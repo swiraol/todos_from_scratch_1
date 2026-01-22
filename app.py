@@ -1,11 +1,12 @@
+import secrets
+from todos.utils import error_for_list_title
 from flask import (
     flash, 
     Flask, 
     g, 
     redirect, 
     render_template, 
-    request, 
-    secrets,
+    request,  
     session, 
     url_for
 )
@@ -31,6 +32,11 @@ def get_lists():
 @app.route("/lists/", methods=["POST"])
 def create_list():
     title = request.form['list_title']
+    all_lists = g.storage.all_lists()
+    error = error_for_list_title(title, all_lists)
+    if error:
+        flash(error, 'error')
+        return redirect(url_for('new_list'))
     g.storage.create_list(title)
     flash('You successfully created a new list', 'success')
     return redirect(url_for('get_lists'))
@@ -53,10 +59,16 @@ def edit_list(list_id):
 @app.route("/lists/<list_id>/edit/", methods=["POST"])
 def update_list(list_id):
     title = request.form['new_list_title']
-    g.storage.edit_list(list_id, title)
+    all_lists = g.storage.all_lists()
+    error = error_for_list_title(title, all_lists)
+    if error:
+        flash(error, 'error')
+        return redirect(url_for('edit_list', list_id=list_id))
+    
+    g.storage.edit_list(list_id, title)    
     flash('You successfully edited your list', 'success')
-
     return redirect(url_for('show_list', list_id=list_id))
+
 @app.route("/lists/<list_id>/delete/", methods=['POST'])
 def delete_list(list_id):
     g.storage.delete_list(list_id)
@@ -80,7 +92,6 @@ def delete_todo(list_id, todo_id):
 
 @app.route("/lists/<list_id>/todos/<todo_id>/update", methods=["POST"])
 def update_todo(list_id, todo_id):
-    print(request.form)
     is_completed = request.form.get('item_status') is not None 
     g.storage.update_todo_status(list_id, todo_id, is_completed)
     return redirect(url_for('show_list', list_id=list_id))

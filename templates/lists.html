@@ -11,7 +11,7 @@
 <ul>
   {% for lst in lists %}
     <li>
-      <a href="{{ url_for('show_list', list_id=lst['id']) }}">{{ lst.title }}</a>
+      <a href="{{ url_for('show_list', list_id=lst['id']) }}">{{ lst.title if lst.title and lst.title.strip() else "(Untitled List)" }}</a>
     </li>
   {% endfor %}
 </ul>

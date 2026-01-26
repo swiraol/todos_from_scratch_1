@@ -23,7 +23,7 @@
 <ul>
   {% for todo in lst['todos'] %}
     <li>
-      <span class="{% if todo.completed %}completed-text{% endif %}">{{ todo['title'] }}
+      <span class="{% if todo.completed %}completed-text{% endif %}">{{ todo['title'] if todo['title'] and todo['title'].strip() else '(Untitled Todo)' }}
 
       </span>
     </li>

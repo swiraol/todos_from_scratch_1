@@ -1,25 +1,28 @@
-{% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    <ul>
-    {% for category, message in messages %}
-      <li>
-        <strong>{{ category }}</strong>: {{ message }}
-      </li>
-    {% endfor %}
-    </ul>
-  {% endif %}
-{% endwith %}
+{% extends 'layout.html' %}
+{% block content %}
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <ul>
+      {% for category, message in messages %}
+        <li>
+          <strong>{{ category }}</strong>: {{ message }}
+        </li>
+      {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
 
-<form action="{{ url_for('create_list') }}" method="post">
-  <dl>
-    <dt>
-      <label for="list_title">Enter the title for your new list:</label>
-    </dt>
-    <dd>
-      <input type="text" name="list_title" placeholder="List Title" value="">
-    </dd>
-  </dl>
-  <fieldset class="actions">
-    <input type="submit" value="Save">
-    <a href="{{ url_for('get_lists') }}">Cancel</a>
-  </fieldset>
+  <form action="{{ url_for('create_list') }}" method="post">
+    <dl>
+      <dt>
+        <label for="list_title">Enter the title for your new list:</label>
+      </dt>
+      <dd>
+        <input type="text" name="list_title" placeholder="List Title" value="">
+      </dd>
+    </dl>
+    <fieldset class="actions">
+      <input type="submit" value="Save">
+      <a href="{{ url_for('get_lists') }}">Cancel</a>
+    </fieldset>
+{% endblock %}

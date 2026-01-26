@@ -1,62 +1,62 @@
-<head>
-  <link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/application.css') }}"
-</head>
+{% extends 'layout.html' %}
 
-{% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    <ul>
-      {% for category, message in messages %}
-        <li>
-          <strong>{{ category }}</strong>:{{ message }}
-        </li>
-      {% endfor %}
-    </ul>
-  {% endif %}
-{% endwith %}
-{{ lst['title'] }}
-<form class="complete_all"
-      action="{{ url_for('complete_all', list_id=lst['id']) }}"
-      method="post">
-  <button class="check" type="submit">Complete All</button>
-</form>
-<a href="{{ url_for('edit_list', list_id=lst['id']) }}">Edit List</a>
-<ul>
-  {% for todo in lst['todos'] %}
-    <li>
-      <span class="{% if todo.completed %}completed-text{% endif %}">{{ todo['title'] if todo['title'] and todo['title'].strip() else '(Untitled Todo)' }}
+{% block content %}
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <ul>
+        {% for category, message in messages %}
+          <li>
+            <strong>{{ category }}</strong>:{{ message }}
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+  {{ lst['title'] }}
+  <form class="complete_all"
+        action="{{ url_for('complete_all', list_id=lst['id']) }}"
+        method="post">
+    <button class="check" type="submit">Complete All</button>
+  </form>
+  <a href="{{ url_for('edit_list', list_id=lst['id']) }}">Edit List</a>
+  <ul>
+    {% for todo in lst['todos'] %}
+      <li>
+        <span class="{% if todo.completed %}completed-text{% endif %}">{{ todo['title'] if todo['title'] and todo['title'].strip() else '(Untitled Todo)' }}
 
-      </span>
-    </li>
-      <form action="{{ url_for('update_todo', list_id=lst['id'], todo_id=todo['id']) }}" method="POST">
-        <input 
-          type="checkbox" 
-          name="item_status" 
-          onchange="this.form.submit()" 
-          {% if todo.completed %} 
-            checked 
-          {% endif %}
-        >
-      </form>
+        </span>
+      </li>
+        <form action="{{ url_for('update_todo', list_id=lst['id'], todo_id=todo['id']) }}" method="POST">
+          <input 
+            type="checkbox" 
+            name="item_status" 
+            onchange="this.form.submit()" 
+            {% if todo.completed %} 
+              checked 
+            {% endif %}
+          >
+        </form>
 
-      <form action="{{ url_for('delete_todo', list_id=lst['id'], todo_id=todo['id']) }}" method="post" class="delete">
-        <button type="submit">Delete</button>
-      </form>
-  {% endfor %}
-</ul>
+        <form action="{{ url_for('delete_todo', list_id=lst['id'], todo_id=todo['id']) }}" method="post" class="delete">
+          <button type="submit">Delete</button>
+        </form>
+    {% endfor %}
+  </ul>
 
-<form action="{{ url_for('create_todo', list_id=lst['id']) }}" method="post">
-  <dl>
-    <dt>
-      <label for="todo_title">Enter a new todo item:</label>
-    </dt>
-    <dd>
-      <input name="todo_title" id="todo_title" placeholder="Something to do" type="text">
-    </dd>
-  </dl>
-  <fieldset class="actions">
-    <input type="submit" value="Add">
-  </fieldset>
-</form>
+  <form action="{{ url_for('create_todo', list_id=lst['id']) }}" method="post">
+    <dl>
+      <dt>
+        <label for="todo_title">Enter a new todo item:</label>
+      </dt>
+      <dd>
+        <input name="todo_title" id="todo_title" placeholder="Something to do" type="text">
+      </dd>
+    </dl>
+    <fieldset class="actions">
+      <input type="submit" value="Add">
+    </fieldset>
+  </form>
 
-<a href="{{ url_for('get_lists') }}">All Lists</a>
+  <a href="{{ url_for('get_lists') }}">All Lists</a>
+{% endblock %}
 

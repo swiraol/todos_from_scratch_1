@@ -1,19 +1,23 @@
-<p>All Lists</p>
-{% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    <ul>
-    {% for category, message in messages %}
-      <li><strong>{{ category }}</strong>:{{ message }}</li>
-    {% endfor %}
-    </ul>
-  {% endif %}
-{% endwith %}
-<ul>
-  {% for lst in lists %}
-    <li>
-      <a href="{{ url_for('show_list', list_id=lst['id']) }}">{{ lst.title if lst.title and lst.title.strip() else "(Untitled List)" }}</a>
-    </li>
-  {% endfor %}
-</ul>
+{% extends 'layout.html' %}
 
-<a href="{{ url_for('new_list') }}">Add New List</a>
+{% block content %}
+  <p>All Lists</p>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul>
+        {% for category, message in messages %}
+          <li><strong>{{ category }}</strong>:{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+    <ul>
+      {% for lst in lists %}
+        <li>
+          <a href="{{ url_for('show_list', list_id=lst['id']) }}">{{ lst.title if lst.title and lst.title.strip() else "(Untitled List)" }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+
+    <a href="{{ url_for('new_list') }}">Add New List</a>
+{% endblock %}

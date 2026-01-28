@@ -24,7 +24,7 @@ class DatabasePersistence:
                     """)
                 cursor.execute("""
                     SELECT COUNT(*)
-                    FROM information_schema_tables
+                    FROM information_schema.tables
                     WHERE table_schema = 'public' AND table_name = 'todos';
                 """)
                 if cursor.fetchone()[0] == 0:

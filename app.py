@@ -36,13 +36,13 @@ def require_todo(f):
     def decorated_func(lst, *args, **kwargs):
         list_id = kwargs.get('list_id')
         todo_id = kwargs.get('todo_id')
-        todos = g.storage.find_todos(list_id)
+        todos = g.storage.find_todos(lst['id'])
 
         todo = next((todo for todo in todos if todo['id'] == todo_id), None)
         if not todo:
             raise NotFound("Todo not found")
 
-        return f(todo=todo, *args, **kwargs)
+        return f(todo=todo, lst=lst, *args, **kwargs)
     
     return decorated_func
 
@@ -75,17 +75,17 @@ def create_list():
 def new_list():
     return render_template('new_list.html')
 
-@app.route("/lists/<list_id>/")
+@app.route("/lists/<int:list_id>/")
 @require_list
 def show_list(lst, list_id):
     return render_template('list.html', lst=lst)
 
-@app.route("/lists/<list_id>/edit/")
+@app.route("/lists/<int:list_id>/edit/")
 @require_list
 def edit_list(lst, list_id):
     return render_template('edit_list.html', lst=lst)
 
-@app.route("/lists/<list_id>/edit/", methods=["POST"])
+@app.route("/lists/<int:list_id>/edit/", methods=["POST"])
 @require_list
 def update_list(lst, list_id):
     title = request.form['new_list_title']
@@ -99,7 +99,7 @@ def update_list(lst, list_id):
     flash('You successfully edited your list', 'success')
     return redirect(url_for('show_list', list_id=lst['id']))
 
-@app.route("/lists/<list_id>/delete/", methods=['POST'])
+@app.route("/lists/<int:list_id>/delete/", methods=['POST'])
 @require_list
 def delete_list(lst, list_id):
     g.storage.delete_list(lst['id'])
@@ -107,7 +107,7 @@ def delete_list(lst, list_id):
 
     return redirect(url_for('get_lists'))
 
-@app.route("/lists/<list_id>/todos/", methods=["POST"])
+@app.route("/lists/<int:list_id>/todos/", methods=["POST"])
 @require_list
 def create_todo(lst, list_id):
     todo_title = request.form['todo_title']
@@ -121,7 +121,7 @@ def create_todo(lst, list_id):
     flash('You successfully created a todo item', 'success')
     return redirect(url_for('show_list', list_id=list_id))
 
-@app.route("/lists/<list_id>/todos/<todo_id>/delete/", methods=["POST"])
+@app.route("/lists/<int:list_id>/todos/<int:todo_id>/delete/", methods=["POST"])
 @require_todo
 def delete_todo(todo, lst, list_id, todo_id):
     g.storage.delete_todo(lst['id'], todo['id'])
@@ -129,7 +129,7 @@ def delete_todo(todo, lst, list_id, todo_id):
     
     return redirect(url_for('show_list', list_id=list_id))
 
-@app.route("/lists/<list_id>/todos/<todo_id>/update", methods=["POST"])
+@app.route("/lists/<int:list_id>/todos/<int:todo_id>/update", methods=["POST"])
 @require_todo
 def update_todo(todo, lst, list_id, todo_id):
     is_completed = request.form.get('item_status') is not None 
@@ -137,7 +137,7 @@ def update_todo(todo, lst, list_id, todo_id):
     flash("The todo has been updated", "success")
     return redirect(url_for('show_list', list_id=lst['id']))
 
-@app.route("/lists/<list_id>/complete_all", methods=["POST"])
+@app.route("/lists/<int:list_id>/complete_all", methods=["POST"])
 @require_list
 def complete_all(lst, list_id):
     g.storage.complete_all_todos(list_id)

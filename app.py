@@ -38,7 +38,7 @@ def require_todo(f):
         todo_id = kwargs.get('todo_id')
         todos = g.storage.find_todos(list_id)
 
-        todo = (todo for todo in todos if todo['id'] == todo_id)
+        todo = next((todo for todo in todos if todo['id'] == todo_id), None)
         if not todo:
             raise NotFound("Todo not found")
 
@@ -121,7 +121,7 @@ def create_todo(list_id):
 @app.route("/lists/<list_id>/todos/<todo_id>/delete/", methods=["POST"])
 @require_todo
 def delete_todo(todo, list_id, todo_id):
-    g.storage.delete_todo(list_id, todo_id)
+    g.storage.delete_todo(list_id, todo['id'])
     flash('You successfully deleted a todo item', 'success')
     
     return redirect(url_for('show_list', list_id=list_id))
@@ -130,7 +130,7 @@ def delete_todo(todo, list_id, todo_id):
 @require_todo
 def update_todo(todo, list_id, todo_id):
     is_completed = request.form.get('item_status') is not None 
-    g.storage.update_todo_status(list_id, todo_id, is_completed)
+    g.storage.update_todo_status(list_id, todo['id'], is_completed)
     flash("The todo has been updated", "success")
     return redirect(url_for('show_list', list_id=list_id))
 

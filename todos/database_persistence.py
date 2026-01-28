@@ -5,8 +5,38 @@ from werkzeug.exceptions import NotFound
 
 class DatabasePersistence:
     def __init__(self):
-        pass
+        self._setup_schema()
     
+    def _setup_schema(self):
+        with self._database_connect() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute("""
+                    SELECT COUNT(*)
+                    FROM information_schema.tables
+                    WHERE table_schema = 'public' AND table_name = 'lists';
+                """)
+                if cursor.fetchone()[0] == 0:
+                    cursor.execute("""
+                                   CREATE TABLE lists (
+                                        id serial PRIMARY KEY,
+                                        title text NOT NULL UNIQUE
+                                   );
+                    """)
+                cursor.execute("""
+                    SELECT COUNT(*)
+                    FROM information_schema_tables
+                    WHERE table_schema = 'public' AND table_name = 'todos';
+                """)
+                if cursor.fetchone()[0] == 0:
+                    cursor.execute("""
+                        CREATE TABLE todos (
+                                   id SERIAL PRIMARY KEY,
+                                   title text NOT NULL,
+                                   completed BOOLEAN NOT NULL,
+                                   list_id INTEGER REFERENCES lists (id) ON DELETE CASCADE
+                        );
+                    """)
+
     @contextmanager
     def _database_connect(self):
         connection = psycopg2.connect(dbname="todos")
@@ -17,7 +47,14 @@ class DatabasePersistence:
             connection.close()
 
     def all_lists(self):
-        query = "SELECT * FROM lists ORDER BY title asc"
+        query = """SELECT l.id, l.title,
+                          COUNT(t.id) as total_todos,
+                          COUNT(CASE WHEN NOT t.completed THEN 1 END) as incomplete_todos
+                   FROM lists l
+                   LEFT JOIN todos t on l.id = t.list_id
+                   GROUP BY l.id, l.title
+                   ORDER BY l.title ASC
+        """
         with self._database_connect() as conn:
             with conn.cursor(cursor_factory=DictCursor) as cursor:
                 cursor.execute(query)

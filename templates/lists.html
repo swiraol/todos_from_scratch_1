@@ -15,6 +15,13 @@
       {% for lst in lists %}
         <li>
           <a href="{{ url_for('show_list', list_id=lst['id']) }}">{{ lst.title if lst.title and lst.title.strip() else "(Untitled List)" }}</a>
+          {% with incomplete_todos_count = g.storage.get_incomplete_todos_count(lst['id']) %}
+            {{ incomplete_todos_count }}
+          {% endwith %}
+          /
+          {% with all_todos_count = g.storage.get_todos_count(lst['id']) %}
+            {{ all_todos_count }}
+          {% endwith %}
         </li>
       {% endfor %}
     </ul>

@@ -20,5 +20,11 @@
 # Implement validations
   # Create a validation that checks for a list title error
   # Create a validation that checks for a todo title error
+# Implement flash messages
+  # After an action is completed (like creating a list, deleting a todo, etc.), the application should provide feedback to the user. 
 # Refactoring
   # As discussed in the Removing Code Duplication assignment, the logic for finding a list or todo and handling a "not found" scenario is repeated. Refactor this logic into decorators (@require_list, @require_todo) to keep your routes clean.
+# Sorting logic
+  # The lists on the main page and the todos within each list page should be sorted. The required behavior is to display incomplete items before completed ones, with each group sorted alphabetically by title.
+# Implement a layout template for shared page structure.
+# Show the number of remaining todos for each list on the /lists page while conserving resources

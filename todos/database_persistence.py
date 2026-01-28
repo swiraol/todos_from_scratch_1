@@ -17,7 +17,7 @@ class DatabasePersistence:
             connection.close()
 
     def all_lists(self):
-        query = "SELECT * FROM lists"
+        query = "SELECT * FROM lists ORDER BY title asc"
         with self._database_connect() as conn:
             with conn.cursor(cursor_factory=DictCursor) as cursor:
                 cursor.execute(query)
@@ -70,15 +70,38 @@ class DatabasePersistence:
                 cursor.execute(query, (todo_title, list_id))
 
     def find_todos(self, list_id):
-        query = "SELECT * FROM todos WHERE list_id = %s ORDER BY id ASC"
+        query = "SELECT * FROM todos WHERE list_id = %s ORDER BY completed ASC, title ASC"
 
         with self._database_connect() as conn:
             with conn.cursor(cursor_factory=DictCursor) as cursor:
                 cursor.execute(query, (list_id,))
                 todos = cursor.fetchall()
                 todos = [dict(todo) for todo in todos]
-        
         return todos
+
+    def get_todos_count(self, list_id):
+        query = """
+            SELECT COUNT(*) FROM todos WHERE list_id = %s
+        """
+        
+        with self._database_connect() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(query, (list_id,))
+                count = cursor.fetchone()
+        
+        return count[0]
+    
+    def get_incomplete_todos_count(self, list_id):
+        query = """
+            SELECT COUNT(*) FROM todos WHERE completed = False AND list_id = %s
+        """
+
+        with self._database_connect() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(query, (list_id,))
+                count = cursor.fetchone()
+        
+        return count[0] 
 
     def delete_todo(self, list_id, todo_id):
         query = "DELETE FROM todos WHERE id = %s and list_id = %s"

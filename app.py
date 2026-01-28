@@ -131,6 +131,7 @@ def delete_todo(todo, list_id, todo_id):
 def update_todo(todo, list_id, todo_id):
     is_completed = request.form.get('item_status') is not None 
     g.storage.update_todo_status(list_id, todo_id, is_completed)
+    flash("The todo has been updated", "success")
     return redirect(url_for('show_list', list_id=list_id))
 
 @app.route("/lists/<list_id>/complete_all", methods=["POST"])

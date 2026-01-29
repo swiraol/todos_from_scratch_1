@@ -1,9 +1,14 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
+  <meta charset="UTF-8">
+  <title>Todo App</title>
   <head>
     <link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/application.css') }}"
   </head>
   <body>
-    <header>Todo Tracker</header>
+    <header>
+      <h1>Todo Tracker</h1>
+    </header>
     <main>
       {% with messages = get_flashed_messages(with_categories=true) %}
           {% if messages %}
@@ -14,9 +19,9 @@
             </ul>
           {% endif %}
         {% endwith %}
+
+        {% block content %}
+        {% endblock %}
       </main>
   </body>
 </html>
-
-{% block content %}
-{% endblock %}

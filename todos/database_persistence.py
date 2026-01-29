@@ -32,7 +32,7 @@ class DatabasePersistence:
                         CREATE TABLE todos (
                                    id SERIAL PRIMARY KEY,
                                    title text NOT NULL,
-                                   completed BOOLEAN NOT NULL,
+                                   completed BOOLEAN NOT NULL DEFAULT false,
                                    list_id INTEGER REFERENCES lists (id) ON DELETE CASCADE
                         );
                     """)
@@ -115,30 +115,6 @@ class DatabasePersistence:
                 todos = cursor.fetchall()
                 todos = [dict(todo) for todo in todos]
         return todos
-
-    def get_todos_count(self, list_id):
-        query = """
-            SELECT COUNT(*) FROM todos WHERE list_id = %s
-        """
-        
-        with self._database_connect() as conn:
-            with conn.cursor() as cursor:
-                cursor.execute(query, (list_id,))
-                count = cursor.fetchone()
-        
-        return count[0]
-    
-    def get_incomplete_todos_count(self, list_id):
-        query = """
-            SELECT COUNT(*) FROM todos WHERE completed = False AND list_id = %s
-        """
-
-        with self._database_connect() as conn:
-            with conn.cursor() as cursor:
-                cursor.execute(query, (list_id,))
-                count = cursor.fetchone()
-        
-        return count[0] 
 
     def delete_todo(self, list_id, todo_id):
         query = "DELETE FROM todos WHERE id = %s and list_id = %s"
